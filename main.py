@@ -1,8 +1,11 @@
-from fastapi import FastAPI, BackgroundTasks
-import uvicorn
+from fastapi import FastAPI, BackgroundTasks, APIRouter
+from src.routes.user_routes import router
+# import uvicorn
 import time
 
 app = FastAPI()
+
+app.include_router(router, prefix='/users', tags=['users'])
 
 @app.get('/')
 def index():
@@ -18,7 +21,7 @@ def send_email(email: str, message: str):
     time.sleep(5)  # Simulate email processing time
     print(f"Email sent to {email}: {message}")
 
-@app.post("/send-email/")
+@app.post("/send-email")
 def trigger_email(email: str, background_tasks: BackgroundTasks):
     background_tasks.add_task(send_email, email, "Welcome to FastAPI!")
     return {"message": "Email sending started!"}
